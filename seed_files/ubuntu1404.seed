@@ -1,0 +1,66 @@
+# Keyboard
+d-i debian-installer/locale string en_US
+d-i keyboard-configuration/layoutcode string us
+
+# Network configuration
+d-i netcfg/choose_interface select auto
+d-i netcfg/dhcp_timeout string 60
+
+# Install non-free firmware
+d-i hw-detect/load_firmware boolean true
+
+# Apt Server
+d-i mirror/http/mirror select CC.archive.ubuntu.com
+
+# Time configuration
+d-i clock-setup/utc boolean true
+d-i time/zone string Etc/UTC
+d-i clock-setup/ntp boolean true
+
+# Configure Disk
+d-i partman-auto/method string lvm
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-md/device_remove_md boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman-auto/choose_recipe select atomic
+d-i partman/default_filesystem string ext4
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman-md/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/mount_style select uuid
+
+# Packages
+d-i	base-installer/kernel/override-image	string linux-virtual
+d-i	base-installer/kernel/headers	boolean false
+tasksel	tasksel/skip-tasks	string standard
+d-i pkgsel/install-recommends false
+d-i	pkgsel/install-language-support	boolean false
+d-i pkgsel/include string openssh-server build-essential dkms
+d-i pkgsel/update-policy select unattended-upgrades
+popularity-contest popularity-contest/participate boolean false
+d-i pkgsel/updatedb boolean false
+
+# Grub
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+d-i	debian-installer/quiet	boolean false
+d-i	debian-installer/splash	boolean false
+
+# Set vagrant user to sudo with no password
+d-i preseed/late_command string echo "vagrant ALL=(ALL) NOPASSWD:ALL" > /target/etc/sudoers.d/90-vagrant
+
+# Configure users
+d-i passwd/root-login boolean false
+d-i passwd/user-fullname string Vagrant
+d-i passwd/username string vagrant
+d-i passwd/user-password password vagrant
+d-i passwd/user-password-again password vagrant
+d-i user-setup/allow-password-weak boolean true
+d-i user-setup/encrypt-home boolean false
